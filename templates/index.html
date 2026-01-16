@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Me-API Playground</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .container-main {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+        }
+        .input-group-text {
+            background: #f8f9fa;
+        }
+        .profile-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .badge-skill {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .project-card {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .alert-custom {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+        .nav-tabs .nav-link {
+            color: #667eea;
+            border: none;
+            border-bottom: 2px solid transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user-circle"></i> Me-API Playground</h1>
+            <p class="mb-0">Build and showcase your professional profile</p>
+        </div>
+
+        <div class="container-main">
+            <!-- Alert Messages -->
+            <div id="alertContainer"></div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#profile" data-bs-toggle="tab">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#skills" data-bs-toggle="tab">Skills</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#projects" data-bs-toggle="tab">Projects</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#search" data-bs-toggle="tab">Search</a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Profile Tab -->
+                <div class="tab-pane fade show active" id="profile">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-user"></i> Profile Information
+                        </div>
+                        <div class="card-body">
+                            <form id="profileForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Education</label>
+                                    <textarea class="form-control" id="education" rows="3" placeholder="Enter your education details"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Profile
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="profileDisplay" class="profile-section" style="display: none;">
+                        <h5>Your Profile</h5>
+                        <p><strong>Name:</strong> <span id="displayName"></span></p>
+                        <p><strong>Email:</strong> <span id="displayEmail"></span></p>
+                        <p><strong>Education:</strong> <span id="displayEducation"></span></p>
+                    </div>
+                </div>
+
+                <!-- Skills Tab -->
+                <div class="tab-pane fade" id="skills">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-star"></i> Add Skills
+                        </div>
+                        <div class="card-body">
+                            <form id="skillForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Skill Name</label>
+                                        <input type="text" class="form-control" id="skillName" placeholder="e.g., Python" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Level</label>
+                                        <select class="form-select" id="skillLevel">
+                                            <option>Beginner</option>
+                                            <option selected>Intermediate</option>
+                                            <option>Advanced</option>
+                                            <option>Expert</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Skill
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-list"></i> Your Skills
+                        </div>
+                        <div class="card-body" id="skillsList">
+                            <p class="text-muted">No skills added yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Tab -->
+                <div class="tab-pane fade" id="projects">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-plus-circle"></i> Add Project
+                        </div>
+                        <div class="card-body">
+                            <form id="projectForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Project Title</label>
+                                    <input type="text" class="form-control" id="projectTitle" placeholder="Enter project title" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" id="projectDesc" rows="4" placeholder="Project description"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Project
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-folder"></i> Your Projects
+                        </div>
+                        <div class="card-body" id="projectsList">
+                            <p class="text-muted">No projects added yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Tab -->
+                <div class="tab-pane fade" id="search">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-search"></i> Search Skills & Projects
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search by skill or project name...">
+                                <button class="btn btn-primary" type="button" id="searchBtn">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="searchResults" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">Search Results</div>
+                            <div class="card-body">
+                                <div id="searchSkills"></div>
+                                <div id="searchProjects"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = '/api';
+
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const alertHTML = `
+                <div class="alert alert-${type} alert-custom alert-dismissible fade show" role="alert">
+                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            document.getElementById('alertContainer').innerHTML = alertHTML;
+            setTimeout(() => {
+                document.getElementById('alertContainer').innerHTML = '';
+            }, 5000);
+        }
+
+        // Load profile
+        async function loadProfile() {
+            try {
+                const response = await fetch(`${API_URL}/profile`);
+                if (response.ok) {
+                    const profile = await response.json();
+                    document.getElementById('name').value = profile.name;
+                    document.getElementById('email').value = profile.email;
+                    document.getElementById('education').value = profile.education || '';
+                    document.getElementById('displayName').textContent = profile.name;
+                    document.getElementById('displayEmail').textContent = profile.email;
+                    document.getElementById('displayEducation').textContent = profile.education || 'Not specified';
+                    document.getElementById('profileDisplay').style.display = 'block';
+                    loadSkills();
+                    loadProjects();
+                }
+            } catch (error) {
+                console.log('No profile yet');
+            }
+        }
+
+        // Save profile
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                education: document.getElementById('education').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showAlert('Profile created successfully!');
+                    loadProfile();
+                } else {
+                    const profile = await fetch(`${API_URL}/profile`);
+                    if (profile.ok) {
+                        await fetch(`${API_URL}/profile`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        showAlert('Profile updated successfully!');
+                        loadProfile();
+                    }
+                }
+            } catch (error) {
+                showAlert('Error saving profile', 'danger');
+            }
+        });
+
+        // Load skills
+        async function loadSkills() {
+            try {
+                const response = await fetch(`${API_URL}/skills`);
+                if (response.ok) {
+                    const skills = await response.json();
+                    const skillsList = document.getElementById('skillsList');
+                    
+                    if (skills.length === 0) {
+                        skillsList.innerHTML = '<p class="text-muted">No skills added yet</p>';
+                    } else {
+                        skillsList.innerHTML = skills.map(skill => `
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge-skill">${skill.name} - ${skill.level}</span>
+                                <button class="btn btn-sm btn-danger" onclick="deleteSkill(${skill.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.log('Error loading skills');
+            }
+        }
+
+        // Add skill
+        document.getElementById('skillForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('skillName').value,
+                level: document.getElementById('skillLevel').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/skills`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showAlert('Skill added successfully!');
+                    document.getElementById('skillForm').reset();
+                    loadSkills();
+                }
+            } catch (error) {
+                showAlert('Error adding skill', 'danger');
+            }
+        });
+
+        // Delete skill
+        async function deleteSkill(id) {
+            if (confirm('Delete this skill?')) {
+                try {
+                    await fetch(`${API_URL}/skills/${id}`, { method: 'DELETE' });
+                    showAlert('Skill deleted!');
+                    loadSkills();
+                } catch (error) {
+                    showAlert('Error deleting skill', 'danger');
+                }
+            }
+        }
+
+        // Load projects
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_URL}/projects`);
+                if (response.ok) {
+                    const projects = await response.json();
+                    const projectsList = document.getElementById('projectsList');
+                    
+                    if (projects.length === 0) {
+                        projectsList.innerHTML = '<p class="text-muted">No projects added yet</p>';
+                    } else {
+                        projectsList.innerHTML = projects.map(project => `
+                            <div class="project-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6>${project.title}</h6>
+                                        <p class="text-muted small">${project.description}</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteProject(${project.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.log('Error loading projects');
+            }
+        }
+
+        // Add project
+        document.getElementById('projectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('projectTitle').value,
+                description: document.getElementById('projectDesc').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showAlert('Project added successfully!');
+                    document.getElementById('projectForm').reset();
+                    loadProjects();
+                }
+            } catch (error) {
+                showAlert('Error adding project', 'danger');
+            }
+        });
+
+        // Delete project
+        async function deleteProject(id) {
+            if (confirm('Delete this project?')) {
+                try {
+                    await fetch(`${API_URL}/projects/${id}`, { method: 'DELETE' });
+                    showAlert('Project deleted!');
+                    loadProjects();
+                } catch (error) {
+                    showAlert('Error deleting project', 'danger');
+                }
+            }
+        }
+
+        // Search
+        document.getElementById('searchBtn').addEventListener('click', async () => {
+            const query = document.getElementById('searchInput').value;
+            if (!query.trim()) {
+                showAlert('Please enter a search term', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/search?q=${query}`);
+                if (response.ok) {
+                    const results = await response.json();
+                    const searchResults = document.getElementById('searchResults');
+                    
+                    let html = '';
+                    if (results.skills.length > 0) {
+                        html += '<h6>Skills:</h6>' + results.skills.map(s => 
+                            `<span class="badge-skill">${s.name} - ${s.level}</span>`
+                        ).join('');
+                    }
+                    if (results.projects.length > 0) {
+                        html += '<h6 class="mt-3">Projects:</h6>' + results.projects.map(p =>
+                            `<div class="project-card">${p.title}</div>`
+                        ).join('');
+                    }
+                    
+                    if (html === '') {
+                        html = '<p class="text-muted">No results found</p>';
+                    }
+                    
+                    document.getElementById('searchResults').innerHTML = `
+                        <div class="card">
+                            <div class="card-header">Search Results</div>
+                            <div class="card-body">${html}</div>
+                        </div>
+                    `;
+                    document.getElementById('searchResults').style.display = 'block';
+                }
+            } catch (error) {
+                showAlert('Error searching', 'danger');
+            }
+        });
+
+        // Load on page load
+        loadProfile();
+    </script>
+</body>
+</html>
